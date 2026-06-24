@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Math Lab | Evaluation of Triple Integration</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Plotly.js for 3D Math Visualization -->
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <!-- Math.js for parsing custom mathematical expressions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    
+    <!-- KaTeX for high-quality mathematical LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Custom CSS Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-frame">
+                <i class="fa-solid fa-cubes-stacked"></i>
+            </div>
+            <div>
+                <h1>Virtual Math Lab</h1>
+                <p>Evaluation of Triple Integration</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li><a href="#" class="active" onclick="switchSection('aim', this)"><i class="fa-solid fa-bullseye"></i>Aim</a></li>
+                <li><a href="#" onclick="switchSection('theory', this)"><i class="fa-solid fa-book-open"></i>Theory</a></li>
+                <li><a href="#" onclick="switchSection('pretest', this)"><i class="fa-solid fa-clipboard-question"></i>Pre Test</a></li>
+                <li><a href="#" onclick="switchSection('simulation', this)"><i class="fa-solid fa-circle-play"></i>Simulation</a></li>
+                <li><a href="#" onclick="switchSection('posttest', this)"><i class="fa-solid fa-clipboard-check"></i>Post Test</a></li>
+                <li><a href="#" onclick="switchSection('contributors', this)"><i class="fa-solid fa-users"></i>Contributors</a></li>
+                <li><a href="#" onclick="switchSection('feedback', this)"><i class="fa-solid fa-comment-dots"></i>Feedback</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+            <!-- 1. AIM SECTION -->
+            <section id="aim" class="section active">
+                <h2><i class="fa-solid fa-bullseye"></i> Aim</h2>
+                <div class="card">
+                    <h3>Learning Objectives</h3>
+                    <p>This virtual lab aims to provide students with a comprehensive understanding of the <strong>evaluation of triple integrals</strong> over bounded three-dimensional solid regions. By the end of this experiment, you will be able to:</p>
+                    <ul>
+                        <li>Understand the geometric and physical interpretation of a triple integral.</li>
+                        <li>Learn how to formulate integration limits for Cartesian, Cylindrical, and Spherical coordinate systems.</li>
+                        <li>Choose the most appropriate coordinate system for a given solid region (e.g. rectangular box, cylinder, sphere, paraboloid, or tetrahedron) to simplify limits of integration.</li>
+                        <li>Visualize the 3D solid region of integration and understand how integrals are evaluated through sequential "slicing" and "accumulation" sweeps.</li>
+                        <li>Apply triple integration to calculate physical quantities such as volume, mass, and moments of inertia.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Experiment Overview</h3>
+                    <p>In multivariable calculus, triple integration is the extension of double integration to three dimensions. While double integration represents accumulating density over a 2D surface (finding area or mass of a lamina), triple integration accumulates density over a 3D solid (finding volume, total mass of a solid, centroids, or moments of inertia).</p>
+                    <p>This lab allows you to interactively adjust the shape parameters of various 3D solids, swap between coordinate systems to see how limits change, and sweep slicing planes along the coordinate axes to visually grasp how three-dimensional integration sweeps accumulate volume.</p>
+                </div>
+            </section>
+
+            <!-- 2. THEORY SECTION -->
+            <section id="theory" class="section">
+                <h2><i class="fa-solid fa-book-open"></i> Theory</h2>
+                <div class="card">
+                    <h3>Triple Integrals definition</h3>
+                    <p>Let \(f(x, y, z)\) be a continuous function defined on a closed, bounded solid region \(V\) in \(\mathbb{R}^3\). The triple integral of \(f\) over the region \(V\) is defined as the limit of Riemann sums:</p>
+                    <div class="equation">
+                        $$\iiint_V f(x, y, z) \, dV = \lim_{\Delta V_i \to 0} \sum_{i=1}^{n} f(x_i^*, y_i^*, z_i^*) \Delta V_i$$
+                    </div>
+                    <p>Where \(dV\) is the infinitesimal volume element. The evaluation of a triple integral is performed by setting up iterated integrals in one of three coordinate systems.</p>
+                </div>
+
+                <div class="card">
+                    <h3>1. Cartesian Coordinate System (x, y, z)</h3>
+                    <p>In Cartesian coordinates, the volume element is \(dV = dz \, dy \, dx\) (or any of the 6 permutations of the order of variables). When the region \(V\) is bounded by \(x \in [a, b]\), \(y \in [g_1(x), g_2(x)]\), and \(z \in [h_1(x,y), h_2(x,y)]\), we calculate the iterated integral as:</p>
+                    <div class="equation">
+                        $$\iiint_V f(x, y, z) \, dV = \int_{a}^{b} \int_{g_1(x)}^{g_2(x)} \int_{h_1(x,y)}^{h_2(x,y)} f(x,y,z) \, dz \, dy \, dx$$
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2. Cylindrical Coordinate System (r, &theta;, z)</h3>
+                    <p>Used when the region \(V\) has rotational symmetry about the z-axis. The transformations are:</p>
+                    <div class="equation">
+                        $$x = r\cos\theta, \quad y = r\sin\theta, \quad z = z$$
+                    </div>
+                    <p>The Jacobian determinant of transformation is \(J = r\). Thus, the volume element becomes \(dV = r \, dz \, dr \, d\theta\), and the integral is:</p>
+                    <div class="equation">
+                        $$\iiint_V f(x,y,z) \, dV = \int_{\alpha}^{\beta} \int_{r_1(\theta)}^{r_2(\theta)} \int_{z_1(r,\theta)}^{z_2(r,\theta)} f(r\cos\theta, r\sin\theta, z) \cdot r \, dz \, dr \, d\theta$$
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>3. Spherical Coordinate System (&rho;, &phi;, &theta;)</h3>
+                    <p>Used when the region has radial symmetry about the origin (spheres, hemispheres, or cones). The transformations are:</p>
+                    <div class="equation">
+                        $$x = \rho\sin\phi\cos\theta, \quad y = \rho\sin\phi\sin\theta, \quad z = \rho\cos\phi$$
+                    </div>
+                    <p>The Jacobian determinant of transformation is \(J = \rho^2 \sin\phi\). The volume element is \(dV = \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta\), and the integral is:</p>
+                    <div class="equation">
+                        $$\iiint_V f(x,y,z) \, dV = \int_{\theta_1}^{\theta_2} \int_{\phi_1}^{\phi_2} \int_{\rho_1(\phi, \theta)}^{\rho_2(\phi, \theta)} f(\rho\sin\phi\cos\theta, \dots) \cdot \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta$$
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Physical Applications</h3>
+                    <table class="math-table">
+                        <thead>
+                            <tr>
+                                <th>Quantity</th>
+                                <th>Integrand \(f(x,y,z)\)</th>
+                                <th>Integral Formulation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Volume of Solid</strong></td>
+                                <td>\(1\)</td>
+                                <td>\(V = \iiint_V dV\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Mass</strong></td>
+                                <td>Density \(\delta(x,y,z)\)</td>
+                                <td>\(M = \iiint_V \delta(x,y,z) \, dV\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Centroid (\(\bar{z}\))</strong></td>
+                                <td>\(z \cdot \delta(x,y,z)\)</td>
+                                <td>\(\bar{z} = \frac{1}{M} \iiint_V z \cdot \delta(x,y,z) \, dV\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Moment of Inertia (\(I_z\))</strong></td>
+                                <td>Distance squared: \(x^2 + y^2\)</td>
+                                <td>\(I_z = \iiint_V (x^2+y^2)\delta(x,y,z) \, dV\)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. PRE TEST SECTION -->
+            <section id="pretest" class="section">
+                <h2><i class="fa-solid fa-clipboard-question"></i> Pre Test</h2>
+                <div class="card">
+                    <p>Complete this prerequisite test to assess your understanding of coordinate system transformations, double integration, and equations of standard 3D surfaces before using the simulation.</p>
+                </div>
+                
+                <!-- Dynamic Quiz injected by app.js -->
+                <div id="pretest-questions"></div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="button" class="btn" id="submit-pretest">
+                        <i class="fas fa-paper-plane"></i> Submit Pre-Test
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="reset-pretest" style="margin-left: 10px; display: none;">
+                        <i class="fas fa-redo"></i> Reset Test
+                    </button>
+                </div>
+                <div id="pretest-result" class="result"></div>
+                <div id="pretest-summary" class="test-summary">
+                    <div class="score-display">
+                        <div class="score-number" id="pretest-score">0</div>
+                        <div class="score-total">out of 10</div>
+                        <div id="pretest-percentage" style="margin-top: 10px; font-size: 1.2rem;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. SIMULATION SECTION -->
+            <section id="simulation" class="section">
+                <h2><i class="fa-solid fa-circle-play"></i> Simulation</h2>
+                
+                <div class="simulation-container">
+                    
+                    <!-- Left Column: Controls -->
+                    <div class="simulation-panel">
+                        <!-- Mode Selector Tabs -->
+                        <div class="sim-tabs">
+                            <button class="sim-tab-btn active" data-mode="preset">Preset Solids</button>
+                            <button class="sim-tab-btn" data-mode="custom">Custom Limits</button>
+                        </div>
+
+                        <!-- Panel A: Preset Control settings -->
+                        <div class="sim-section active" id="preset-controls-panel">
+                            <div class="input-row">
+                                <label for="preset-shape"><i class="fa-solid fa-shapes"></i> Select 3D Shape</label>
+                                <select id="preset-shape">
+                                    <option value="box">Rectangular Box (Cartesian bounds)</option>
+                                    <option value="cylinder" selected>Cylinder (Rotational bounds)</option>
+                                    <option value="sphere">Sphere (Radial bounds)</option>
+                                    <option value="paraboloid">Paraboloid Region (z = x² + y²)</option>
+                                    <option value="tetrahedron">Tetrahedron (x + y + z &le; a)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-row">
+                                <label for="preset-coords"><i class="fa-solid fa-compass"></i> Coordinate System</label>
+                                <select id="preset-coords">
+                                    <option value="cartesian">Cartesian (x, y, z)</option>
+                                    <option value="cylindrical">Cylindrical (r, &theta;, z)</option>
+                                    <option value="spherical">Spherical (&rho;, &phi;, &theta;)</option>
+                                </select>
+                            </div>
+
+                            <!-- Coordinate recommendation warning/tip box -->
+                            <div class="alert alert-warning" id="coord-tip">
+                                <i class="fa-solid fa-circle-info"></i> Cylindrical coordinates are recommended for a Cylinder.
+                            </div>
+
+                            <!-- Dynamic parameters group injected by simulatorJS -->
+                            <div class="input-section">
+                                <h4><i class="fa-solid fa-sliders"></i> Shape Parameters</h4>
+                                <div id="dynamic-sliders-container"></div>
+                            </div>
+
+                            <div class="input-row">
+                                <label for="preset-integrand"><i class="fa-solid fa-calculator"></i> Integrand f(x, y, z)</label>
+                                <select id="preset-integrand">
+                                    <option value="1">f(x, y, z) = 1 (Evaluate Volume)</option>
+                                    <option value="z">f(x, y, z) = z (Evaluate Mass, variable density)</option>
+                                    <option value="r2">f(x, y, z) = x² + y² (Evaluate Iz, Inertia)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Panel B: Custom Control settings -->
+                        <div class="sim-section" id="custom-controls-panel">
+                            <div class="alert alert-success">
+                                <i class="fa-solid fa-keyboard"></i>
+                                <span>Input integration bounds as numeric values or expressions of outer variables. Use standard math (e.g. sqrt, ^, pi, e).</span>
+                            </div>
+
+                            <div class="input-row">
+                                <label><i class="fa-solid fa-arrows-left-right"></i> Outer Limits (x)</label>
+                                <div class="range-inputs">
+                                    <input type="text" id="custom-x-min" value="-2" style="width:45%;">
+                                    <span>to</span>
+                                    <input type="text" id="custom-x-max" value="2" style="width:45%;">
+                                </div>
+                            </div>
+
+                            <div class="input-row">
+                                <label><i class="fa-solid fa-arrows-up-down"></i> Middle Limits (y in terms of x)</label>
+                                <div class="range-inputs">
+                                    <input type="text" id="custom-y-min" value="-sqrt(4 - x^2)" style="width:45%;">
+                                    <span>to</span>
+                                    <input type="text" id="custom-y-max" value="sqrt(4 - x^2)" style="width:45%;">
+                                </div>
+                            </div>
+
+                            <div class="input-row">
+                                <label><i class="fa-solid fa-arrows-up-to-line"></i> Inner Limits (z in terms of x, y)</label>
+                                <div class="range-inputs">
+                                    <input type="text" id="custom-z-min" value="x^2 + y^2" style="width:45%;">
+                                    <span>to</span>
+                                    <input type="text" id="custom-z-max" value="4" style="width:45%;">
+                                </div>
+                            </div>
+
+                            <div class="input-row">
+                                <label for="custom-f"><i class="fa-solid fa-calculator"></i> Integrand f(x, y, z)</label>
+                                <input type="text" id="custom-f" value="1">
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <button type="button" class="btn" id="custom-calculate-btn" style="width: 100%; justify-content: center;">
+                                    <i class="fa-solid fa-circle-notch fa-spin id-calc-spinner hidden" id="custom-calc-spinner"></i> Compute & Render
+                                </button>
+                            </div>
+                            <div class="alert alert-error hidden" id="custom-error" style="margin-top: 10px;"></div>
+                        </div>
+
+                        <!-- Section: Slicing Sweep controls (Common to both Preset and Custom) -->
+                        <div style="margin-top: 25px; border-top: 2px solid var(--border); padding-top: 20px;">
+                            <h4><i class="fa-solid fa-layer-group"></i> Slicing Sweeper</h4>
+                            
+                            <div class="slider-group">
+                                <div class="slider-info">
+                                    <span id="outer-slice-label">Outer Sweep (x)</span>
+                                    <span class="slider-val" id="outer-slice-val">0.00</span>
+                                </div>
+                                <input type="range" id="outer-slice-slider" min="0" max="100" value="50">
+                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="outer-slice-sub">Sweeps slicing plane along x-axis</p>
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-info">
+                                    <span id="middle-slice-label">Middle Sweep (y)</span>
+                                    <span class="slider-val" id="middle-slice-val">0.00</span>
+                                </div>
+                                <input type="range" id="middle-slice-slider" min="0" max="100" value="50">
+                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="middle-slice-sub">Sweeps strip on the slice plane along y-axis</p>
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-info">
+                                    <span id="inner-slice-label">Inner Sweep (z)</span>
+                                    <span class="slider-val" id="inner-slice-val">100</span>
+                                </div>
+                                <input type="range" id="inner-slice-slider" min="0" max="100" value="100">
+                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="inner-slice-sub">Sweeps height of point element on the strip along z-axis</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: 3D Visualization and Math steps -->
+                    <div class="graph-panel">
+                        
+                        <!-- 3D Plot Card -->
+                        <div class="plotly-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <div class="graph-title"><i class="fa-solid fa-chart-line"></i> 3D Region of Integration</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="btn btn-secondary" id="btn-reset-camera" title="Reset Camera View" style="padding: 6px 12px; font-size: 0.9rem;">
+                                        <i class="fa-solid fa-camera-rotate"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="btn-toggle-mesh" title="Toggle Grid Mesh" style="padding: 6px 12px; font-size: 0.9rem;">
+                                        <i class="fa-solid fa-border-none"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="plotly-graph"></div>
+                        </div>
+
+                        <!-- Mathematical steps Card -->
+                        <div class="steps-card">
+                            <div class="graph-title"><i class="fa-solid fa-square-root-variable"></i> Mathematical Evaluation</div>
+                            
+                            <div id="math-integral-setup" class="equation"></div>
+                            
+                            <div style="margin-top: 20px;">
+                                <h4 style="color: var(--secondary); margin-bottom: 12px;">Step-by-Step Calculus Integration</h4>
+                                
+                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
+                                    <strong style="color: var(--primary);">Step 1: Inner Integral (with respect to z / &rho; / z)</strong>
+                                    <div id="math-step-inner" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
+                                </div>
+
+                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
+                                    <strong style="color: var(--primary);">Step 2: Middle Integral (with respect to y / r / &phi;)</strong>
+                                    <div id="math-step-middle" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
+                                </div>
+
+                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
+                                    <strong style="color: var(--primary);">Step 3: Outer Integral (with respect to x / &theta; / &theta;)</strong>
+                                    <div id="math-step-outer" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
+                                </div>
+
+                                <div class="alert alert-success" style="margin-top: 25px; padding: 15px; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span>Calculated Value of Integral:</span>
+                                    <strong><span id="math-final-val">0.00</span></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. POST TEST SECTION -->
+            <section id="posttest" class="section">
+                <h2><i class="fa-solid fa-clipboard-check"></i> Post Test</h2>
+                <div class="card">
+                    <p>Take this test to evaluate the mathematical insights and coordinate bounds formulation skills you gained from working with the 3D Triple Integration Simulator.</p>
+                </div>
+                
+                <!-- Dynamic Quiz injected by app.js -->
+                <div id="posttest-questions"></div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="button" class="btn" id="submit-posttest">
+                        <i class="fas fa-paper-plane"></i> Submit Post-Test
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="reset-posttest" style="margin-left: 10px; display: none;">
+                        <i class="fas fa-redo"></i> Reset Test
+                    </button>
+                </div>
+                <div id="posttest-result" class="result"></div>
+                <div id="posttest-summary" class="test-summary">
+                    <div class="score-display">
+                        <div class="score-number" id="posttest-score">0</div>
+                        <div class="score-total">out of 10</div>
+                        <div id="posttest-percentage" style="margin-top: 10px; font-size: 1.2rem;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. CONTRIBUTORS SECTION -->
+            <section id="contributors" class="section">
+                <h2><i class="fa-solid fa-users"></i> Contributors</h2>
+                <div class="card">
+                    <div class="contributors">
+                        <div class="contributor">
+                            <div class="contributor-frame">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </div>
+                            <h4>Student Intern</h4>
+                            <p>Lead Web Developer & Math Modeler</p>
+                            <p>Maths Internship Programme 2026</p>
+                        </div>
+                        <div class="contributor">
+                            <div class="contributor-frame">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                            </div>
+                            <h4>Academic Mentor</h4>
+                            <p>Department of Mathematics</p>
+                            <p>Theoretical Analysis & Validation</p>
+                        </div>
+                        <div class="contributor">
+                            <div class="contributor-frame">
+                                <i class="fa-solid fa-people-roof"></i>
+                            </div>
+                            <h4>Coordinator</h4>
+                            <p>Programme Committee Coordinator</p>
+                            <p>Lab Integration & Efficacy Assessment</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. FEEDBACK SECTION -->
+            <section id="feedback" class="section">
+                <h2><i class="fa-solid fa-comment-dots"></i> Feedback</h2>
+                <div class="card">
+                    <p>We are constantly seeking to improve our mathematical simulation modules. Please take a moment to rate and review this Virtual Lab module.</p>
+                </div>
+                
+                <div class="card">
+                    <form class="feedback-form" id="feedback-form">
+                        <div class="feedback-row">
+                            <label for="fb-name">Full Name</label>
+                            <input type="text" id="fb-name" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="feedback-row">
+                            <label for="fb-email">Email Address</label>
+                            <input type="email" id="fb-email" required placeholder="Enter your email address">
+                        </div>
+
+                        <div class="feedback-row">
+                            <label>Rate the Experiment Interface Design (UI/UX)</label>
+                            <div class="rating-container">
+                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="1"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="2"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="3"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="4"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="rating-ui" value="0">
+                        </div>
+
+                        <div class="feedback-row">
+                            <label>Rate the Quality of Explanations & 3D Slicing Sweeper</label>
+                            <div class="rating-container">
+                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="1"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="2"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="3"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="4"></i>
+                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="rating-math" value="0">
+                        </div>
+
+                        <div class="feedback-row">
+                            <label for="fb-comments">Comments / Suggestions for Improvement</label>
+                            <textarea id="fb-comments" rows="5" placeholder="Share your experience, report any display bugs, or suggest additional 3D shapes..."></textarea>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 25px;">
+                            <button type="submit" class="btn">
+                                <i class="fas fa-paper-plane"></i> Submit Feedback
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="feedback-result" class="result"></div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Department of Mathematics. Developed under the Maths Internship Programme. All rights reserved.</p>
+    </footer>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
+    <script src="simulator.js"></script>
+</body>
+</html>
