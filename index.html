@@ -12,6 +12,7 @@
     <!-- Plotly.js for 3D Math Visualization -->
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <!-- Math.js for parsing custom mathematical expressions -->
+<script src="https://unpkg.com/algebrite/dist/algebrite.bundle-for-browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     
     <!-- KaTeX for high-quality mathematical LaTeX rendering -->
@@ -86,9 +87,9 @@
                 <h2><i class="fa-solid fa-book-open"></i> Theory</h2>
                 <div class="card">
                     <h3>Triple Integrals definition</h3>
-                    <p>Let \(f(x, y, z)\) be a continuous function defined on a closed, bounded solid region \(V\) in \(\mathbb{R}^3\). The triple integral of \(f\) over the region \(V\) is defined as the limit of Riemann sums:</p>
+                    <p>Let \(f(x, y, z)\) be a continuous function defined on a closed, bounded solid region \(V\) in \(\mathbb{R}^3\). The triple integral of \(f\) over the region \(V\) is defined as :</p>
                     <div class="equation">
-                        $$\iiint_V f(x, y, z) \, dV = \lim_{\Delta V_i \to 0} \sum_{i=1}^{n} f(x_i^*, y_i^*, z_i^*) \Delta V_i$$
+                        $$\iiint_V f(x, y, z) \, dV$$
                     </div>
                     <p>Where \(dV\) is the infinitesimal volume element. The evaluation of a triple integral is performed by setting up iterated integrals in one of three coordinate systems.</p>
                 </div>
@@ -101,24 +102,23 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3>2. Cylindrical Coordinate System (r, &theta;, z)</h3>
-                    <p>Used when the region \(V\) has rotational symmetry about the z-axis. The transformations are:</p>
-                    <div class="equation">
-                        $$x = r\cos\theta, \quad y = r\sin\theta, \quad z = z$$
-                    </div>
-                    <p>The Jacobian determinant of transformation is \(J = r\). Thus, the volume element becomes \(dV = r \, dz \, dr \, d\theta\), and the integral is:</p>
-                    <div class="equation">
-                        $$\iiint_V f(x,y,z) \, dV = \int_{\alpha}^{\beta} \int_{r_1(\theta)}^{r_2(\theta)} \int_{z_1(r,\theta)}^{z_2(r,\theta)} f(r\cos\theta, r\sin\theta, z) \cdot r \, dz \, dr \, d\theta$$
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>3. Spherical Coordinate System (&rho;, &phi;, &theta;)</h3>
+                              <div class="card">
+                    <h3>2. Spherical Coordinate System (&rho;, &phi;, &theta;)</h3>
                     <p>Used when the region has radial symmetry about the origin (spheres, hemispheres, or cones). The transformations are:</p>
                     <div class="equation">
                         $$x = \rho\sin\phi\cos\theta, \quad y = \rho\sin\phi\sin\theta, \quad z = \rho\cos\phi$$
                     </div>
+<!-- Examples of Regions in Spherical Coordinates -->
+<div class="region-examples">
+    <h4>Common Regions in Spherical Coordinates</h4>
+
+  <img src="images/spherical_regions.png"
+     alt="Sphere Hemisphere Positive Octant"
+     class="region-image">
+    <div class="region-grid">
+
+           </div>
+</div>
                     <p>The Jacobian determinant of transformation is \(J = \rho^2 \sin\phi\). The volume element is \(dV = \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta\), and the integral is:</p>
                     <div class="equation">
                         $$\iiint_V f(x,y,z) \, dV = \int_{\theta_1}^{\theta_2} \int_{\phi_1}^{\phi_2} \int_{\rho_1(\phi, \theta)}^{\rho_2(\phi, \theta)} f(\rho\sin\phi\cos\theta, \dots) \cdot \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta$$
@@ -189,195 +189,8 @@
                 </div>
             </section>
 
-            <!-- 4. SIMULATION SECTION -->
-            <section id="simulation" class="section">
-                <h2><i class="fa-solid fa-circle-play"></i> Simulation</h2>
-                
-                <div class="simulation-container">
-                    
-                    <!-- Left Column: Controls -->
-                    <div class="simulation-panel">
-                        <!-- Mode Selector Tabs -->
-                        <div class="sim-tabs">
-                            <button class="sim-tab-btn active" data-mode="preset">Preset Solids</button>
-                            <button class="sim-tab-btn" data-mode="custom">Custom Limits</button>
-                        </div>
+           
 
-                        <!-- Panel A: Preset Control settings -->
-                        <div class="sim-section active" id="preset-controls-panel">
-                            <div class="input-row">
-                                <label for="preset-shape"><i class="fa-solid fa-shapes"></i> Select 3D Shape</label>
-                                <select id="preset-shape">
-                                    <option value="box">Rectangular Box (Cartesian bounds)</option>
-                                    <option value="cylinder" selected>Cylinder (Rotational bounds)</option>
-                                    <option value="sphere">Sphere (Radial bounds)</option>
-                                    <option value="paraboloid">Paraboloid Region (z = x² + y²)</option>
-                                    <option value="tetrahedron">Tetrahedron (x + y + z &le; a)</option>
-                                </select>
-                            </div>
-
-                            <div class="input-row">
-                                <label for="preset-coords"><i class="fa-solid fa-compass"></i> Coordinate System</label>
-                                <select id="preset-coords">
-                                    <option value="cartesian">Cartesian (x, y, z)</option>
-                                    <option value="cylindrical">Cylindrical (r, &theta;, z)</option>
-                                    <option value="spherical">Spherical (&rho;, &phi;, &theta;)</option>
-                                </select>
-                            </div>
-
-                            <!-- Coordinate recommendation warning/tip box -->
-                            <div class="alert alert-warning" id="coord-tip">
-                                <i class="fa-solid fa-circle-info"></i> Cylindrical coordinates are recommended for a Cylinder.
-                            </div>
-
-                            <!-- Dynamic parameters group injected by simulatorJS -->
-                            <div class="input-section">
-                                <h4><i class="fa-solid fa-sliders"></i> Shape Parameters</h4>
-                                <div id="dynamic-sliders-container"></div>
-                            </div>
-
-                            <div class="input-row">
-                                <label for="preset-integrand"><i class="fa-solid fa-calculator"></i> Integrand f(x, y, z)</label>
-                                <select id="preset-integrand">
-                                    <option value="1">f(x, y, z) = 1 (Evaluate Volume)</option>
-                                    <option value="z">f(x, y, z) = z (Evaluate Mass, variable density)</option>
-                                    <option value="r2">f(x, y, z) = x² + y² (Evaluate Iz, Inertia)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Panel B: Custom Control settings -->
-                        <div class="sim-section" id="custom-controls-panel">
-                            <div class="alert alert-success">
-                                <i class="fa-solid fa-keyboard"></i>
-                                <span>Input integration bounds as numeric values or expressions of outer variables. Use standard math (e.g. sqrt, ^, pi, e).</span>
-                            </div>
-
-                            <div class="input-row">
-                                <label><i class="fa-solid fa-arrows-left-right"></i> Outer Limits (x)</label>
-                                <div class="range-inputs">
-                                    <input type="text" id="custom-x-min" value="-2" style="width:45%;">
-                                    <span>to</span>
-                                    <input type="text" id="custom-x-max" value="2" style="width:45%;">
-                                </div>
-                            </div>
-
-                            <div class="input-row">
-                                <label><i class="fa-solid fa-arrows-up-down"></i> Middle Limits (y in terms of x)</label>
-                                <div class="range-inputs">
-                                    <input type="text" id="custom-y-min" value="-sqrt(4 - x^2)" style="width:45%;">
-                                    <span>to</span>
-                                    <input type="text" id="custom-y-max" value="sqrt(4 - x^2)" style="width:45%;">
-                                </div>
-                            </div>
-
-                            <div class="input-row">
-                                <label><i class="fa-solid fa-arrows-up-to-line"></i> Inner Limits (z in terms of x, y)</label>
-                                <div class="range-inputs">
-                                    <input type="text" id="custom-z-min" value="x^2 + y^2" style="width:45%;">
-                                    <span>to</span>
-                                    <input type="text" id="custom-z-max" value="4" style="width:45%;">
-                                </div>
-                            </div>
-
-                            <div class="input-row">
-                                <label for="custom-f"><i class="fa-solid fa-calculator"></i> Integrand f(x, y, z)</label>
-                                <input type="text" id="custom-f" value="1">
-                            </div>
-
-                            <div style="margin-top: 15px;">
-                                <button type="button" class="btn" id="custom-calculate-btn" style="width: 100%; justify-content: center;">
-                                    <i class="fa-solid fa-circle-notch fa-spin id-calc-spinner hidden" id="custom-calc-spinner"></i> Compute & Render
-                                </button>
-                            </div>
-                            <div class="alert alert-error hidden" id="custom-error" style="margin-top: 10px;"></div>
-                        </div>
-
-                        <!-- Section: Slicing Sweep controls (Common to both Preset and Custom) -->
-                        <div style="margin-top: 25px; border-top: 2px solid var(--border); padding-top: 20px;">
-                            <h4><i class="fa-solid fa-layer-group"></i> Slicing Sweeper</h4>
-                            
-                            <div class="slider-group">
-                                <div class="slider-info">
-                                    <span id="outer-slice-label">Outer Sweep (x)</span>
-                                    <span class="slider-val" id="outer-slice-val">0.00</span>
-                                </div>
-                                <input type="range" id="outer-slice-slider" min="0" max="100" value="50">
-                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="outer-slice-sub">Sweeps slicing plane along x-axis</p>
-                            </div>
-
-                            <div class="slider-group">
-                                <div class="slider-info">
-                                    <span id="middle-slice-label">Middle Sweep (y)</span>
-                                    <span class="slider-val" id="middle-slice-val">0.00</span>
-                                </div>
-                                <input type="range" id="middle-slice-slider" min="0" max="100" value="50">
-                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="middle-slice-sub">Sweeps strip on the slice plane along y-axis</p>
-                            </div>
-
-                            <div class="slider-group">
-                                <div class="slider-info">
-                                    <span id="inner-slice-label">Inner Sweep (z)</span>
-                                    <span class="slider-val" id="inner-slice-val">100</span>
-                                </div>
-                                <input type="range" id="inner-slice-slider" min="0" max="100" value="100">
-                                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 4px;" id="inner-slice-sub">Sweeps height of point element on the strip along z-axis</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: 3D Visualization and Math steps -->
-                    <div class="graph-panel">
-                        
-                        <!-- 3D Plot Card -->
-                        <div class="plotly-card">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <div class="graph-title"><i class="fa-solid fa-chart-line"></i> 3D Region of Integration</div>
-                                <div style="display: flex; gap: 8px;">
-                                    <button type="button" class="btn btn-secondary" id="btn-reset-camera" title="Reset Camera View" style="padding: 6px 12px; font-size: 0.9rem;">
-                                        <i class="fa-solid fa-camera-rotate"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" id="btn-toggle-mesh" title="Toggle Grid Mesh" style="padding: 6px 12px; font-size: 0.9rem;">
-                                        <i class="fa-solid fa-border-none"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="plotly-graph"></div>
-                        </div>
-
-                        <!-- Mathematical steps Card -->
-                        <div class="steps-card">
-                            <div class="graph-title"><i class="fa-solid fa-square-root-variable"></i> Mathematical Evaluation</div>
-                            
-                            <div id="math-integral-setup" class="equation"></div>
-                            
-                            <div style="margin-top: 20px;">
-                                <h4 style="color: var(--secondary); margin-bottom: 12px;">Step-by-Step Calculus Integration</h4>
-                                
-                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
-                                    <strong style="color: var(--primary);">Step 1: Inner Integral (with respect to z / &rho; / z)</strong>
-                                    <div id="math-step-inner" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
-                                </div>
-
-                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
-                                    <strong style="color: var(--primary);">Step 2: Middle Integral (with respect to y / r / &phi;)</strong>
-                                    <div id="math-step-middle" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
-                                </div>
-
-                                <div class="step" style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 15px;">
-                                    <strong style="color: var(--primary);">Step 3: Outer Integral (with respect to x / &theta; / &theta;)</strong>
-                                    <div id="math-step-outer" style="margin-top: 8px; font-size: 1.05rem;">Evaluating...</div>
-                                </div>
-
-                                <div class="alert alert-success" style="margin-top: 25px; padding: 15px; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
-                                    <span>Calculated Value of Integral:</span>
-                                    <strong><span id="math-final-val">0.00</span></strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- 5. POST TEST SECTION -->
             <section id="posttest" class="section">
@@ -406,109 +219,241 @@
                     </div>
                 </div>
             </section>
+<!-- 4. SIMULATION SECTION -->
+<section id="simulation" class="section">
 
+<h2>
+<i class="fa-solid fa-circle-play"></i>
+Simulation
+</h2>
+<div class="sim-tabs">
+
+<button
+class="sim-tab-btn active"
+onclick="showSimTab('volume-tab',this)">
+Volume Calculator
+</button>
+
+<button
+class="sim-tab-btn"
+onclick="showSimTab('triple-tab',this)">
+Triple Integral Evaluator
+</button>
+
+</div>
+<div id="volume-tab" class="sim-content active">
+<div class="simulation-container">
+
+<div class="simulation-panel">
+
+<h3>Coordinate System</h3>
+
+<select id="coordinate-system">
+    <option value="cartesian">Cartesian</option>
+    <option value="spherical">Spherical</option>
+</select>
+
+<div id="limit-inputs"></div>
+
+<br>
+
+<button class="btn" id="generate-region">
+Generate Region
+</button>
+
+<button class="btn" id="evaluate-volume">
+Evaluate Volume
+</button>
+
+</div>
+
+<div class="graph-panel">
+
+<div class="plotly-card">
+<div id="plotly-graph"></div>
+</div>
+
+<div class="steps-card">
+<h3>Mathematical Evaluation</h3>
+<div id="solution-steps"></div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div id="triple-tab" class="sim-content">
+
+    <h3>Triple Integral Evaluator</h3>
+
+    <label>Function f(x,y,z)</label><br>
+    <input type="text" id="integrand" value="x+y+z">
+
+    <br><br>
+
+    <label>x lower</label><br>
+    <input type="text" id="xlower" value="0">
+
+    <br><br>
+
+    <label>x upper</label><br>
+    <input type="text" id="xupper" value="1">
+
+    <br><br>
+
+    <label>y lower</label><br>
+    <input type="text" id="ylower" value="0">
+
+    <br><br>
+
+    <label>y upper</label><br>
+    <input type="text" id="yupper" value="x">
+
+    <br><br>
+
+    <label>z lower</label><br>
+    <input type="text" id="zlower" value="0">
+
+    <br><br>
+
+    <label>z upper</label><br>
+    <input type="text" id="zupper" value="x+y">
+
+    <br><br>
+
+    <button class="btn" id="solve-triple">
+        Solve Integral
+    </button>
+
+    <br><br>
+
+    <div id="triple-solution"></div>
+
+    <div id="triple-plot"
+         style="height:500px; margin-top:20px;">
+    </div>
+
+</div>
+</div>
+</section>
+            
             <!-- 6. CONTRIBUTORS SECTION -->
-            <section id="contributors" class="section">
-                <h2><i class="fa-solid fa-users"></i> Contributors</h2>
-                <div class="card">
-                    <div class="contributors">
-                        <div class="contributor">
-                            <div class="contributor-frame">
-                                <i class="fa-solid fa-user-graduate"></i>
-                            </div>
-                            <h4>Student Intern</h4>
-                            <p>Lead Web Developer & Math Modeler</p>
-                            <p>Maths Internship Programme 2026</p>
-                        </div>
-                        <div class="contributor">
-                            <div class="contributor-frame">
-                                <i class="fa-solid fa-chalkboard-user"></i>
-                            </div>
-                            <h4>Academic Mentor</h4>
-                            <p>Department of Mathematics</p>
-                            <p>Theoretical Analysis & Validation</p>
-                        </div>
-                        <div class="contributor">
-                            <div class="contributor-frame">
-                                <i class="fa-solid fa-people-roof"></i>
-                            </div>
-                            <h4>Coordinator</h4>
-                            <p>Programme Committee Coordinator</p>
-                            <p>Lab Integration & Efficacy Assessment</p>
-                        </div>
-                    </div>
+<section id="contributors" class="section">
+    <h2><i class="fa-solid fa-users"></i> Contributors</h2>
+
+    <div class="card">
+        <div class="contributors">
+
+            <!-- Dr. Shaziya -->
+            <div class="contributor">
+                <div class="contributor-frame">
+                    <img src="images/shaziya.jpg" alt="Dr. Shaziya Shaikh">
                 </div>
-            </section>
 
-            <!-- 7. FEEDBACK SECTION -->
-            <section id="feedback" class="section">
-                <h2><i class="fa-solid fa-comment-dots"></i> Feedback</h2>
-                <div class="card">
-                    <p>We are constantly seeking to improve our mathematical simulation modules. Please take a moment to rate and review this Virtual Lab module.</p>
+                <h4>Dr. Shaziya Shaikh</h4>
+                <p>Assistant Professor in AS&H PCCOE</p>
+            </div>
+
+            <!-- Krutika -->
+            <div class="contributor">
+                <div class="contributor-frame">
+                    <img src="images/krutika.jpg" alt="Krutika Ambekar">
                 </div>
-                
-                <div class="card">
-                    <form class="feedback-form" id="feedback-form">
-                        <div class="feedback-row">
-                            <label for="fb-name">Full Name</label>
-                            <input type="text" id="fb-name" required placeholder="Enter your full name">
-                        </div>
 
-                        <div class="feedback-row">
-                            <label for="fb-email">Email Address</label>
-                            <input type="email" id="fb-email" required placeholder="Enter your email address">
-                        </div>
+                <h4>Krutika Ambekar</h4>
 
-                        <div class="feedback-row">
-                            <label>Rate the Experiment Interface Design (UI/UX)</label>
-                            <div class="rating-container">
-                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="1"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="2"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="3"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="4"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="ui" data-value="5"></i>
-                            </div>
-                            <input type="hidden" id="rating-ui" value="0">
-                        </div>
+                <p>
+                    <a href="https://www.linkedin.com/in/krutika-ambekar-b048b03a1" target="_blank">
+                        LinkedIn
+                    </a>
+                    |
+                    <a href="https://www.instagram.com/krutika_ambekar6" target="_blank">
+                        Instagram
+                    </a>
+                </p>
 
-                        <div class="feedback-row">
-                            <label>Rate the Quality of Explanations & 3D Slicing Sweeper</label>
-                            <div class="rating-container">
-                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="1"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="2"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="3"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="4"></i>
-                                <i class="rating-star fa-solid fa-star" data-group="math" data-value="5"></i>
-                            </div>
-                            <input type="hidden" id="rating-math" value="0">
-                        </div>
+                <p>Student of PCCOE</p>
+            </div>
 
-                        <div class="feedback-row">
-                            <label for="fb-comments">Comments / Suggestions for Improvement</label>
-                            <textarea id="fb-comments" rows="5" placeholder="Share your experience, report any display bugs, or suggest additional 3D shapes..."></textarea>
-                        </div>
-
-                        <div style="text-align: center; margin-top: 25px;">
-                            <button type="submit" class="btn">
-                                <i class="fas fa-paper-plane"></i> Submit Feedback
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div id="feedback-result" class="result"></div>
+            <!-- Aadira -->
+            <div class="contributor">
+                <div class="contributor-frame">
+                    <img src="images/aadira.jpg" alt="Aadira Chaudhary">
                 </div>
-            </section>
+
+                <h4>Aadira Chaudhary</h4>
+
+                <p>
+                    <a href="https://www.linkedin.com/in/aadira-chaudhary-2509063a1" target="_blank">
+                        LinkedIn
+                    </a>
+                    |
+                    <a href="https://www.instagram.com/aadir_a12?igsh=MTRkNXZuODBzOHNpdg==" target="_blank">
+                        Instagram
+                    </a>
+                </p>
+
+                <p>Student of PCCOE</p>
+            </div>
+
+            <!-- Kartik -->
+            <div class="contributor">
+                <div class="contributor-frame">
+                    <img src="images/kartik.jpg" alt="Kartik Rana">
+                </div>
+
+                <h4>Kartik Rana</h4>
+
+                <p>
+                    <a href="https://www.linkedin.com/in/kartik-rana-53bb1637b" target="_blank">
+                        LinkedIn
+                    </a>
+                    |
+                    <a href="https://www.instagram.com/kxrtikkk09?igsh=bTU4em5vYWJycnRo" target="_blank">
+                        Instagram
+                    </a>
+                </p>
+
+                <p>Student of PCCOE</p>
+            </div>
 
         </div>
     </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2026 Department of Mathematics. Developed under the Maths Internship Programme. All rights reserved.</p>
-    </footer>
+           <!-- 7. FEEDBACK SECTION -->
+<section id="feedback" class="section">
+    <h2><i class="fa-solid fa-comment-dots"></i> Feedback</h2>
 
-    <!-- App Scripts -->
-    <script src="app.js"></script>
-    <script src="simulator.js"></script>
+    <div class="card" style="text-align:center;">
+        <p>
+            We value your feedback. Please click the link below to fill out our feedback form.
+        </p>
+
+        <p style="margin-top:20px;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvSFeEeI4_UbiciKFxB49H1m1iXffaFPyvwREv6OzUHmL0lA/viewform?usp=publish-editor"
+               target="_blank">
+               Click Here to Submit Feedback
+            </a>
+        </p>
+    </div>
+</section>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <p>&copy; 2026 Department of Mathematics. Developed under the Maths Internship Programme. All rights reserved.</p>
+</footer>
+
+<!-- App Scripts -->
+<script src="nerdamer.core.js"></script>
+<script src="Algebra.js"></script>
+<script src="Calculus.js"></script>
+<script src="Solve.js"></script>
+<script src="app.js"></script>
+<script src="simulator.js"></script>
+
 </body>
 </html>
