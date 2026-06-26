@@ -3,7 +3,17 @@
    Evaluation of Triple Integration
    Manages tab switching, quizzes (pre/post-test), and feedback ratings.
    ========================================================================== */
+function parseAngle(value){
 
+value = value
+.replace(/pi/g, Math.PI)
+.replace(/PI/g, Math.PI);
+
+return Function(
+"return " + value
+)();
+
+}
 document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------------------------
     // 1. Mobile Menu and Tab Navigation
@@ -59,257 +69,257 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ----------------------------------------------------------------------
-    // 2. Pre-Test Quiz Configuration & Logic (10 Questions)
-    // ----------------------------------------------------------------------
-    const pretestQuestions = [
-        {
-            id: 'pr1',
-            q: 'What represents the differential volume element \\(dV\\) in cylindrical coordinates?',
-            options: {
-                a: '\\(dr \\, d\\theta \\, dz\\)',
-                b: '\\(r \\, dz \\, dr \\, d\\theta\\)',
-                c: '\\(\\rho^2 \\sin\\phi \\, d\\rho \\, d\\phi \\, d\\theta\\)',
-                d: '\\(r \\, dz \\, dr\\)'
-            },
-            correct: 'b',
-            explanation: 'In cylindrical coordinates, \\(x = r \\cos\\theta\\), \\(y = r \\sin\\theta\\), and \\(z = z\\). The Jacobian determinant of the transformation is \\(r\\), which means the differential volume element is \\(dV = r \\, dz \\, dr \\, d\\theta\\).'
+  // ----------------------------------------------------------------------
+// 2. Pre-Test Quiz Configuration & Logic (10 Questions)
+// ----------------------------------------------------------------------
+const pretestQuestions = [
+    {
+        id: 'pr1',
+        q: 'Which coordinate system uses (x, y, z) to locate a point in space?',
+        options: {
+            a: 'Spherical',
+            b: 'Cartesian',
+            c: 'Polar',
+            d: 'Cylindrical'
         },
-        {
-            id: 'pr2',
-            q: 'In spherical coordinates, the polar/colatitude angle \\(\\phi\\) (tilt from positive z-axis) ranges from:',
-            options: {
-                a: '\\(0\\) to \\(2\\pi\\)',
-                b: '\\(-\\pi\\) to \\(\\pi\\)',
-                c: '\\(0\\) to \\(\\pi\\)',
-                d: '\\(-\\pi/2\\) to \\(\\pi/2\\)'
-            },
-            correct: 'c',
-            explanation: 'The polar angle \\(\\phi\\) starts at \\(0\\) (along the positive z-axis) and sweeps down to \\(\\pi\\) (along the negative z-axis). Sweeping beyond \\(\\pi\\) is covered by rotating the azimuthal angle \\(\\theta\\) from \\(0\\) to \\(2\\pi\\).'
+        correct: 'b',
+        explanation: 'Cartesian coordinates represent a point using three perpendicular axes: x, y, and z.'
+    },
+    {
+        id: 'pr2',
+        q: 'In Cartesian coordinates, the z-coordinate represents:',
+        options: {
+            a: 'Radius',
+            b: 'Angle',
+            c: 'Height',
+            d: 'Distance from origin'
         },
-        {
-            id: 'pr3',
-            q: 'Which of the following solids is best represented using cylindrical coordinates?',
-            options: {
-                a: 'A rectangular box',
-                b: 'A sphere centered at the origin',
-                c: 'A cylinder centered on the z-axis',
-                d: 'A tetrahedron bounded by coordinate planes'
-            },
-            correct: 'c',
-            explanation: 'Cylindrical coordinates are best suited for regions with rotational symmetry about a single axis, like cylinders, cones, or paraboloids. The boundaries of a cylinder centered on the z-axis simplify to constant limits: \\(r = R\\).'
+        correct: 'c',
+        explanation: 'The z-coordinate represents the height or vertical position of a point.'
+    },
+    {
+        id: 'pr3',
+        q: 'A point in Cartesian coordinates is written as:',
+        options: {
+            a: '(ρ, φ, θ)',
+            b: '(r, θ)',
+            c: '(x, y, z)',
+            d: '(r, z)'
         },
-        {
-            id: 'pr4',
-            q: 'If \\(f(x, y, z) = 1\\) is integrated over a solid region \\(V\\), the value of the triple integral represents:',
-            options: {
-                a: 'The mass of the region',
-                b: 'The surface area of the region',
-                c: 'The volume of the region',
-                d: 'The centroid of the region'
-            },
-            correct: 'c',
-            explanation: 'Integrating the constant function \\(1\\) over a solid region \\(V\\) sums up all the infinitesimal volume elements \\(dV\\) in the region, yielding the total volume: \\(\\iiint_V 1 \\, dV = \\text{Volume}(V)\\).'
+        correct: 'c',
+        explanation: 'Cartesian coordinates use the ordered triple (x, y, z).'
+    },
+    {
+        id: 'pr4',
+        q: 'Which coordinate system is most suitable for a sphere centered at the origin?',
+        options: {
+            a: 'Cartesian',
+            b: 'Spherical',
+            c: 'Rectangular',
+            d: 'Plane Coordinates'
         },
-        {
-            id: 'pr5',
-            q: 'What is the transformation equation for \\(z\\) in spherical coordinates?',
-            options: {
-                a: '\\(z = \\rho \\sin\\phi\\)',
-                b: '\\(z = \\rho \\cos\\phi\\)',
-                c: '\\(z = \\rho \\sin\\phi \\cos\\theta\\)',
-                d: '\\(z = \\rho \\cos\\theta\\)'
-            },
-            correct: 'b',
-            explanation: 'Using spherical trigonometry, the projection of the radial vector of length \\(\\rho\\) onto the vertical z-axis is determined by the adjacent angle \\(\\phi\\), giving \\(z = \\rho \\cos\\phi\\).'
+        correct: 'b',
+        explanation: 'Spherical coordinates are ideal for spheres because of their radial symmetry.'
+    },
+    {
+        id: 'pr5',
+        q: 'In spherical coordinates, ρ represents:',
+        options: {
+            a: 'Height',
+            b: 'Distance from the origin',
+            c: 'Angle from z-axis',
+            d: 'Angle in xy-plane'
         },
-        {
-            id: 'pr6',
-            q: 'What is the equation of a circular cone centered on the z-axis with its vertex at the origin?',
-            options: {
-                a: '\\(z^2 = x^2 + y^2\\)',
-                b: '\\(z = x^2 + y^2\\)',
-                c: '\\(x^2 + y^2 + z^2 = R^2\\)',
-                d: '\\(z = x + y\\)'
-            },
-            correct: 'a',
-            explanation: 'A circular cone centered on the z-axis is defined by the equation \\(z^2 = c^2(x^2 + y^2)\\). For a standard cone making a \\(45^\\circ\\) angle with the z-axis, \\(c = 1\\), yielding \\(z^2 = x^2 + y^2\\).'
+        correct: 'b',
+        explanation: 'ρ (rho) is the distance from the origin to the point.'
+    },
+    {
+        id: 'pr6',
+        q: 'In spherical coordinates, θ is measured in the:',
+        options: {
+            a: 'xz-plane',
+            b: 'yz-plane',
+            c: 'xy-plane',
+            d: 'None of these'
         },
-        {
-            id: 'pr7',
-            q: 'Convert the Cartesian point \\((1, \\sqrt{3}, 2)\\) to Cylindrical coordinates \\((r, \\theta, z)\\).',
-            options: {
-                a: '\\((2, \\pi/6, 2)\\)',
-                b: '\\((2, \\pi/3, 2)\\)',
-                c: '\\((4, \\pi/3, 2)\\)',
-                d: '\\((2, 2\\pi/3, 2)\\)'
-            },
-            correct: 'b',
-            explanation: 'The radial coordinate is \\(r = \\sqrt{x^2+y^2} = \\sqrt{1 + 3} = 2\\). The angle is \\(\\theta = \\arctan(y/x) = \\arctan(\\sqrt{3}) = \\pi/3\\). The z-coordinate remains \\(2\\), giving \\((2, \\pi/3, 2)\\).'
+        correct: 'c',
+        explanation: 'θ is the azimuthal angle measured in the xy-plane.'
+    },
+    {
+        id: 'pr7',
+        q: 'The angle φ in spherical coordinates is measured from the:',
+        options: {
+            a: 'Positive x-axis',
+            b: 'Positive y-axis',
+            c: 'Positive z-axis',
+            d: 'Origin'
         },
-        {
-            id: 'pr8',
-            q: 'Convert the Cartesian point \\((0, 0, 2)\\) to Spherical coordinates \\((\\rho, \\phi, \\theta)\\).',
-            options: {
-                a: '\\((2, 0, 0)\\)',
-                b: '\\((2, \\pi/2, 0)\\)',
-                c: '\\((2, \\pi, 0)\\)',
-                d: '\\((2, 0, \\pi/2)\\)'
-            },
-            correct: 'a',
-            explanation: 'The point lies on the positive z-axis. The distance from the origin is \\(\\rho = 2\\). Since it lies on the positive z-axis, the polar angle \\(\\phi = 0\\), and the azimuthal angle \\(\\theta\\) is arbitrary (conventionally set to \\(0\\)), resulting in \\((2, 0, 0)\\).'
+        correct: 'c',
+        explanation: 'φ is the angle between the positive z-axis and the radius vector.'
+    },
+    {
+        id: 'pr8',
+        q: 'Which equation correctly represents z in spherical coordinates?',
+        options: {
+            a: 'z = ρ sinφ',
+            b: 'z = ρ cosφ',
+            c: 'z = ρ sinθ',
+            d: 'z = ρ cosθ'
         },
-        {
-            id: 'pr9',
-            q: 'What is the value of the double integral \\(\\int_0^1 \\int_0^x dy \\, dx\\)?',
-            options: {
-                a: '\\(1\\)',
-                b: '\\(1/2\\)',
-                c: '\\(1/3\\)',
-                d: '\\(2\\)'
-            },
-            correct: 'b',
-            explanation: 'Evaluating the inner integral gives \\(\\int_0^x dy = x\\). The outer integral is \\(\\int_0^1 x \\, dx = [\\frac{x^2}{2}]_0^1 = 1/2\\).'
+        correct: 'b',
+        explanation: 'The spherical coordinate transformation is z = ρ cosφ.'
+    },
+    {
+        id: 'pr9',
+        q: 'For a complete sphere, the angle θ varies from:',
+        options: {
+            a: '0 to π',
+            b: '0 to π/2',
+            c: '0 to 2π',
+            d: '0 to 4π'
         },
-        {
-            id: 'pr10',
-            q: 'Which coordinate system is most appropriate for integrating over a paraboloid \\(z = 9 - x^2 - y^2\\) above the xy-plane?',
-            options: {
-                a: 'Cartesian',
-                b: 'Cylindrical',
-                c: 'Spherical',
-                d: 'Bipolar'
-            },
-            correct: 'b',
-            explanation: 'The paraboloid has rotational symmetry about the z-axis, and the boundary in the xy-plane is the circle \\(x^2 + y^2 = 9\\). Cylindrical coordinates \\((r, \\theta, z)\\) are ideal, yielding limits \\(\\theta \\in [0, 2\\pi]\\), \\(r \\in [0, 3]\\), and \\(z \\in [0, 9 - r^2]\\).'
-        }
-    ];
+        correct: 'c',
+        explanation: 'θ completes one full revolution around the z-axis, so θ ranges from 0 to 2π.'
+    },
+    {
+        id: 'pr10',
+        q: 'Which coordinate system is generally preferred for regions having radial symmetry about the origin?',
+        options: {
+            a: 'Cartesian',
+            b: 'Spherical',
+            c: 'Linear',
+            d: 'Rectangular'
+        },
+        correct: 'b',
+        explanation: 'Spherical coordinates simplify regions with radial symmetry such as spheres and hemispheres.'
+    }
+];
 
-    // ----------------------------------------------------------------------
-    // 3. Post-Test Quiz Configuration & Logic (10 Questions)
-    // ----------------------------------------------------------------------
-    const posttestQuestions = [
-        {
-            id: 'po1',
-            q: 'When evaluating the volume of a sphere of radius \\(R\\) centered at the origin using spherical coordinates, the limits of integration are:',
-            options: {
-                a: '\\(\\rho \\in [0, R], \\, \\phi \\in [0, \\pi], \\, \\theta \\in [0, 2\\pi]\\)',
-                b: '\\(\\rho \\in [0, R], \\, \\phi \\in [0, 2\\pi], \\, \\theta \\in [0, \\pi]\\)',
-                c: '\\(\\rho \\in [0, R], \\, \\phi \\in [-\\pi, \\pi], \\, \\theta \\in [0, \\pi]\\)',
-                d: '\\(\\rho \\in [-R, R], \\, \\phi \\in [0, \\pi], \\, \\theta \\in [0, 2\\pi]\\)'
-            },
-            correct: 'a',
-            explanation: 'To sweep out the entire volume of a sphere of radius \\(R\\), the radius \\(\\rho\\) must span from \\(0\\) to \\(R\\), the polar angle \\(\\phi\\) must sweep from top to bottom pole \\([0, \\pi]\\), and the azimuthal angle \\(\\theta\\) must sweep a full circle in the xy-plane \\([0, 2\\pi]\\).'
-        },
-        {
-            id: 'po2',
-            q: 'For a solid tetrahedron bounded by the coordinate planes and the plane \\(x + y + z = 1\\), what are the limits of the inner integral with respect to \\(z\\) (in the order \\(dz \\, dy \\, dx\\))?',
-            options: {
-                a: '\\(0 \\le z \\le 1\\)',
-                b: '\\(0 \\le z \\le 1 - x - y\\)',
-                c: '\\(0 \\le z \\le 1 - x\\)',
-                d: '\\(x + y \\le z \\le 1\\)'
-            },
-            correct: 'b',
-            explanation: 'The lower bound is the xy-plane (where \\(z=0\\)). The upper bound is the boundary plane \\(x + y + z = 1\\). Solving for \\(z\\) in terms of \\(x\\) and \\(y\\) yields \\(z = 1 - x - y\\), giving limits of \\(0\\) to \\(1 - x - y\\).'
-        },
-        {
-            id: 'po3',
-            q: 'Why does a paraboloid region bounded by \\(z = x^2 + y^2\\) and the plane \\(z = 4\\) simplify in cylindrical coordinates?',
-            options: {
-                a: 'Because the boundaries become constant limits for all variables',
-                b: 'Because the boundary equation becomes \\(z = r^2\\), which eliminates the angular dependency',
-                c: 'Because the volume element cancels out the variables',
-                d: 'Because the limits for \\(z\\) are independent of \\(r\\)'
-            },
-            correct: 'b',
-            explanation: 'Since \\(x^2 + y^2 = r^2\\) in cylindrical coordinates, the boundary paraboloid is defined by \\(z = r^2\\). This eliminates \\(\\theta\\) from the limits: \\(\\theta \\in [0, 2\\pi]\\), \\(r \\in [0, 2]\\), and \\(z \\in [r^2, 4]\\).'
-        },
-        {
-            id: 'po4',
-            q: 'What is the Jacobian determinant factor when transforming a triple integral from Cartesian coordinates to Spherical coordinates?',
-            options: {
-                a: '\\(r\\)',
-                b: '\\(\\rho \\sin\\phi\\)',
-                c: '\\(\\rho^2 \\sin\\phi\\)',
-                d: '\\(\\rho^2 \\cos\\phi\\)'
-            },
-            correct: 'c',
-            explanation: 'The Jacobian determinant of transformation from Cartesian \\((x,y,z)\\) to spherical \\((\\rho, \\phi, \\theta)\\) is \\(\\rho^2 \\sin\\phi\\). This factor acts as a scaling term to account for the distortion of volume elements during coordinate mapping.'
-        },
-        {
-            id: 'po5',
-            q: 'If we change the order of integration of a triple integral (e.g., from \\(dz \\, dy \\, dx\\) to \\(dx \\, dy \\, dz\\)), what happens?',
-            options: {
-                a: 'The final numerical value of the integral changes',
-                b: 'Only the integrand function changes',
-                c: 'The limits of integration and the differential sequence change',
-                d: 'Nothing changes, the limits remain identical'
-            },
-            correct: 'c',
-            explanation: 'By Fubini\'s Theorem, the final numerical value remains identical. However, changing the order of integration requires boundary projection onto different coordinate planes, changing the mathematical limits and the differential sequence.'
-        },
-        {
-            id: 'po6',
-            q: 'What are the limits of integration for evaluating \\(\\iiint_V dV\\) over a box bounded by \\(x \\in [-1, 1]\\), \\(y \\in [0, 2]\\), and \\(z \\in [0, 3]\\)?',
-            options: {
-                a: '\\(\\int_{0}^{1} \\int_{0}^{2} \\int_{0}^{3} dz \\, dy \\, dx\\)',
-                b: '\\(\\int_{-1}^{1} \\int_{0}^{2} \\int_{0}^{3} dz \\, dy \\, dx\\)',
-                c: '\\(\\int_{-1}^{1} \\int_{-2}^{2} \\int_{0}^{3} dz \\, dy \\, dx\\)',
-                d: '\\(\\int_{0}^{1} \\int_{0}^{2} \\int_{-3}^{3} dz \\, dy \\, dx\\)'
-            },
-            correct: 'b',
-            explanation: 'The limits correspond directly to the boundaries of the box: \\(x\\) ranges from \\(-1\\) to \\(1\\), \\(y\\) from \\(0\\) to \\(2\\), and \\(z\\) from \\(0\\) to \\(3\\).'
-        },
-        {
-            id: 'po7',
-            q: 'When evaluating the volume of a cone \\(z = \\sqrt{x^2+y^2}\\) bounded by \\(z = H\\), what is the upper limit for the polar angle \\(\\phi\\) in spherical coordinates?',
-            options: {
-                a: '\\(\\pi/6\\)',
-                b: '\\(\\pi/4\\)',
-                c: '\\(\\pi/3\\)',
-                d: '\\(\\pi/2\\)'
-            },
-            correct: 'b',
-            explanation: 'The cone equation \\(z = \\sqrt{x^2+y^2}\\) translates in spherical coordinates to \\(\\rho\\cos\\phi = \\rho\\sin\\phi\\). Simplifying gives \\(\\tan\\phi = 1\\), which yields the angle \\(\\phi = \\pi/4\\) as the bounding cone shell.'
-        },
-        {
-            id: 'po8',
-            q: 'If a solid has a constant density \\(\\delta(x,y,z) = k\\) over a region \\(V\\), what is the relationship between its mass \\(M\\) and its volume \\(V_0\\)?',
-            options: {
-                a: '\\(M = k + V_0\\)',
-                b: '\\(M = k \\cdot V_0\\)',
-                c: '\\(M = V_0 / k\\)',
-                d: '\\(M = k^2 \\cdot V_0\\)'
-            },
-            correct: 'b',
-            explanation: 'With a constant density, the mass integral becomes: \\(M = \\iiint_V k \\, dV = k \\iiint_V dV = k \\cdot \\text{Volume}(V) = k \\cdot V_0\\).'
-        },
-        {
-            id: 'po9',
-            q: 'For the order of integration \\(\\int_0^1 \\int_0^{1-x} \\int_0^{1-x-y} dz \\, dy \\, dx\\), what is the corresponding region of integration?',
-            options: {
-                a: 'A unit sphere in the positive octant',
-                b: 'A unit cylinder in the positive octant',
-                c: 'A unit tetrahedron in the positive octant',
-                d: 'A unit box'
-            },
-            correct: 'c',
-            explanation: 'The boundary equations are \\(z = 1-x-y\\) (the plane \\(x+y+z=1\\)), \\(y = 1-x\\) (the line \\(x+y=1\\)), and \\(x=1\\), all bounded below by the coordinate planes. This forms a tetrahedron of unit intercepts in the positive octant.'
-        },
-        {
-            id: 'po10',
-            q: 'Which of the following triple integrals computes the moment of inertia about the z-axis (\\(I_z\\)) of a solid with density \\(\\delta(x,y,z)\\)?',
-            options: {
-                a: '\\(\\iiint_V z^2 \\delta \\, dV\\)',
-                b: '\\(\\iiint_V (x^2 + y^2) \\delta \\, dV\\)',
-                c: '\\(\\iiint_V (x^2 + y^2 + z^2) \\delta \\, dV\\)',
-                d: '\\(\\iiint_V (x+y) \\delta \\, dV\\)'
-            },
-            correct: 'b',
-            explanation: 'The moment of inertia \\(I_z\\) measures resistance to rotation about the z-axis, which is the sum of mass elements weighted by the square of their radial distance \\(r^2 = x^2+y^2\\) from the z-axis: \\(I_z = \\iiint_V (x^2+y^2)\\delta \\, dV\\).'
-        }
-    ];
+  // ----------------------------------------------------------------------
+// Post-Test Quiz Configuration & Logic (10 Questions)
+// ----------------------------------------------------------------------
+const posttestQuestions = [
+{
+    id: 'po1',
+    q: 'Which coordinate system is most suitable for evaluating the volume of a sphere centered at the origin?',
+    options: {
+        a: 'Cartesian',
+        b: 'Spherical',
+        c: 'Rectangular',
+        d: 'Plane Polar'
+    },
+    correct: 'b',
+    explanation: 'Spherical coordinates match the symmetry of a sphere and simplify the limits of integration.'
+},
+{
+    id: 'po2',
+    q: 'Find the value of \\(x^2+y^2+z^2\\) at the point \\((2,1,2)\\).',
+    options: {
+        a: '7',
+        b: '8',
+        c: '9',
+        d: '10'
+    },
+    correct: 'c',
+    explanation: '2² + 1² + 2² = 4 + 1 + 4 = 9.'
+},
+{
+    id: 'po3',
+    q: 'The Cartesian equation \\(x^2+y^2+z^2=16\\) represents:',
+    options: {
+        a: 'Cylinder',
+        b: 'Cone',
+        c: 'Sphere of radius 4',
+        d: 'Paraboloid'
+    },
+    correct: 'c',
+    explanation: 'The equation x²+y²+z²=r² represents a sphere of radius r. Here r=4.'
+},
+{
+    id: 'po4',
+    q: 'Find the spherical coordinate distance \\(\\rho\\) of the point \\((0,0,5)\\).',
+    options: {
+        a: '0',
+        b: '5',
+        c: '10',
+        d: '25'
+    },
+    correct: 'b',
+    explanation: 'ρ = √(0²+0²+5²) = 5.'
+},
+{
+    id: 'po5',
+    q: 'For the upper hemisphere of a sphere, the angle \\(\\phi\\) varies between:',
+    options: {
+        a: '\\(0\\leq\\phi\\leq\\pi\\)',
+        b: '\\(\\pi/2\\leq\\phi\\leq\\pi\\)',
+        c: '\\(0\\leq\\phi\\leq\\pi/2\\)',
+        d: '\\(0\\leq\\phi\\leq2\\pi\\)'
+    },
+    correct: 'c',
+    explanation: 'For points above the xy-plane, φ varies from 0 to π/2.'
+},
+{
+    id: 'po6',
+    q: 'Which of the following points lies in the first octant?',
+    options: {
+        a: '(2,1,3)',
+        b: '(-2,1,3)',
+        c: '(2,-1,3)',
+        d: '(2,1,-3)'
+    },
+    correct: 'a',
+    explanation: 'In the first octant, x, y and z are all positive.'
+},
+{
+    id: 'po7',
+    q: 'For a sphere of radius 6, the correct limits of \\(\\rho\\) are:',
+    options: {
+        a: '\\(-6\\leq\\rho\\leq6\\)',
+        b: '\\(0\\leq\\rho\\leq6\\)',
+        c: '\\(0\\leq\\rho\\leq12\\)',
+        d: '\\(0\\leq\\rho\\leq\\pi\\)'
+    },
+    correct: 'b',
+    explanation: 'The radial distance starts at the origin and ends at the sphere boundary.'
+},
+{
+    id: 'po8',
+    q: 'The Jacobian factor in spherical coordinates is:',
+    options: {
+        a: '\\(\\rho\\)',
+        b: '\\(\\rho\\sin\\phi\\)',
+        c: '\\(\\rho^2\\sin\\phi\\)',
+        d: '\\(\\rho^2\\cos\\phi\\)'
+    },
+    correct: 'c',
+    explanation: 'The differential volume element is dV = ρ²sinφ dρ dφ dθ.'
+},
+{
+    id: 'po9',
+    q: 'Evaluate \\(\\iiint_V 1\\,dV\\) if the volume of the solid region is 20 cubic units.',
+    options: {
+        a: '1',
+        b: '10',
+        c: '20',
+        d: '40'
+    },
+    correct: 'c',
+    explanation: 'The triple integral of 1 over a region equals its volume.'
+},
+{
+    id: 'po10',
+    q: 'The positive octant of a sphere is described by:',
+    options: {
+        a: '\\(0\\leq\\phi\\leq\\pi,\\;0\\leq\\theta\\leq2\\pi\\)',
+        b: '\\(0\\leq\\phi\\leq\\pi/2,\\;0\\leq\\theta\\leq\\pi/2\\)',
+        c: '\\(0\\leq\\phi\\leq\\pi/2,\\;0\\leq\\theta\\leq2\\pi\\)',
+        d: '\\(\\pi/2\\leq\\phi\\leq\\pi,\\;0\\leq\\theta\\leq\\pi/2\\)'
+    },
+    correct: 'b',
+    explanation: 'In the positive octant, x≥0, y≥0 and z≥0, giving φ and θ both from 0 to π/2.'
+}
+];
 
     // Helper to generate quiz HTML
     function buildQuiz(questions, containerId, prefix) {
@@ -566,3 +576,776 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+const coordSelect =
+document.getElementById("coordinate-system");
+
+if(coordSelect){
+
+const limitInputs =
+document.getElementById("limit-inputs");
+
+function createInputs(){
+
+let html="";
+
+if(coordSelect.value==="cartesian"){
+
+html=`
+
+<div class="limit-group">
+<label>x limits</label>
+<input id="xmin" value="0">
+<input id="xmax" value="2">
+</div>
+
+<div class="limit-group">
+<label>y limits</label>
+<input id="ymin" value="0">
+<input id="ymax" value="2">
+</div>
+
+<div class="limit-group">
+<label>z limits</label>
+<input id="zmin" value="0">
+<input id="zmax" value="2">
+</div>
+
+`;
+
+}
+
+else{
+
+html=`
+
+<div class="limit-group">
+<label>ρ limits</label>
+<input id="rmin" value="0">
+<input id="rmax" value="3">
+</div>
+
+<div class="limit-group">
+<label>θ limits</label>
+<input id="tmin" value="0">
+<input id="tmax" value="2*pi">
+</div>
+
+<div class="limit-group">
+<label>φ limits</label>
+<input id="pmin" value="0">
+<input id="pmax" value="pi">
+</div>
+
+`;
+
+}
+
+limitInputs.innerHTML=html;
+
+}
+
+createInputs();
+
+coordSelect.addEventListener(
+"change",
+createInputs
+);
+document
+.getElementById("generate-region")
+.addEventListener("click",generateRegion);
+
+function generateRegion(){
+
+if(coordSelect.value==="cartesian"){
+
+drawCartesian();
+
+}
+else{
+
+drawSphere();
+
+}
+
+}
+function drawCartesian(){
+
+let xmin=parseFloat(
+document.getElementById("xmin").value);
+
+let xmax=parseFloat(
+document.getElementById("xmax").value);
+
+let ymin=parseFloat(
+document.getElementById("ymin").value);
+
+let ymax=parseFloat(
+document.getElementById("ymax").value);
+
+let zmin=parseFloat(
+document.getElementById("zmin").value);
+
+let zmax=parseFloat(
+document.getElementById("zmax").value);
+
+let trace={
+type:'mesh3d',
+
+x:[
+xmin,xmax,xmax,xmin,
+xmin,xmax,xmax,xmin
+],
+
+y:[
+ymin,ymin,ymax,ymax,
+ymin,ymin,ymax,ymax
+],
+
+z:[
+zmin,zmin,zmin,zmin,
+zmax,zmax,zmax,zmax
+],
+
+opacity:0.6
+};
+
+Plotly.newPlot(
+'plotly-graph',
+[trace]
+);
+
+}
+function drawSphere(){
+
+let R=parseFloat(
+document.getElementById("rmax").value
+);
+
+let u=[];
+let v=[];
+let x=[];
+let y=[];
+let z=[];
+
+for(let i=0;i<30;i++){
+
+u[i]=[];
+
+x[i]=[];
+y[i]=[];
+z[i]=[];
+
+for(let j=0;j<30;j++){
+
+let theta=
+2*Math.PI*i/29;
+
+let phi=
+Math.PI*j/29;
+
+x[i][j]=
+R*Math.sin(phi)*Math.cos(theta);
+
+y[i][j]=
+R*Math.sin(phi)*Math.sin(theta);
+
+z[i][j]=
+R*Math.cos(phi);
+
+}
+
+}
+
+let data=[{
+
+type:'surface',
+x:x,
+y:y,
+z:z
+
+}];
+
+Plotly.newPlot(
+'plotly-graph',
+data
+);
+
+}
+document
+.getElementById("evaluate-volume")
+.addEventListener(
+"click",
+evaluateVolume
+);
+function evaluateVolume(){
+
+if(coordSelect.value==="cartesian"){
+
+let xmin=parseFloat(
+document.getElementById("xmin").value
+);
+
+let xmax=parseFloat(
+document.getElementById("xmax").value
+);
+
+let ymin=parseFloat(
+document.getElementById("ymin").value
+);
+
+let ymax=parseFloat(
+document.getElementById("ymax").value
+);
+
+let zmin=parseFloat(
+document.getElementById("zmin").value
+);
+
+let zmax=parseFloat(
+document.getElementById("zmax").value
+);
+
+let volume=
+(xmax-xmin)*
+(ymax-ymin)*
+(zmax-zmin);
+
+document.getElementById("solution-steps").innerHTML = `
+
+<h3>Region Limits</h3>
+
+<p>${xmin} ≤ x ≤ ${xmax}</p>
+<p>${ymin} ≤ y ≤ ${ymax}</p>
+<p>${zmin} ≤ z ≤ ${zmax}</p>
+
+<hr>
+
+<h3>Triple Integral</h3>
+
+<p>V = ∭ 1 dV</p>
+
+<p>
+V =
+∫<sub>${xmin}</sub><sup>${xmax}</sup>
+∫<sub>${ymin}</sub><sup>${ymax}</sup>
+∫<sub>${zmin}</sub><sup>${zmax}</sup>
+1 dz dy dx
+</p>
+
+<hr>
+
+<h3>Evaluate Inner Integral</h3>
+
+<p>
+∫<sub>${zmin}</sub><sup>${zmax}</sup> 1 dz
+</p>
+
+<p>
+= z |<sub>${zmin}</sub><sup>${zmax}</sup>
+</p>
+
+<p>
+= ${zmax-zmin}
+</p>
+
+<hr>
+
+<h3>Evaluate Middle Integral</h3>
+
+<p>
+∫<sub>${ymin}</sub><sup>${ymax}</sup> dy
+</p>
+
+<p>
+= ${ymax-ymin}
+</p>
+
+<hr>
+
+<h3>Evaluate Outer Integral</h3>
+
+<p>
+∫<sub>${xmin}</sub><sup>${xmax}</sup> dx
+</p>
+
+<p>
+= ${xmax-xmin}
+</p>
+
+<hr>
+
+<h3>Final Volume</h3>
+
+<p>
+V =
+(${xmax-xmin})
+×
+(${ymax-ymin})
+×
+(${zmax-zmin})
+</p>
+
+<p>
+=
+${volume}
+</p>
+
+<hr>
+
+<h2 style="color:green;">
+Final Volume = ${volume} cubic units
+</h2>
+
+`;
+
+}
+
+else{
+
+evaluateSphere();
+
+}
+
+}
+function evaluateSphere(){
+
+let rmin = parseFloat(
+document.getElementById("rmin").value
+);
+
+let rmax = parseFloat(
+document.getElementById("rmax").value
+);
+
+let tmin = parseAngle(
+document.getElementById("tmin").value
+);
+
+let tmax = parseAngle(
+document.getElementById("tmax").value
+);
+
+let pmin = parseAngle(
+document.getElementById("pmin").value
+);
+
+let pmax = parseAngle(
+document.getElementById("pmax").value
+);
+
+let rhoPart =
+(Math.pow(rmax,3)-Math.pow(rmin,3))/3;
+
+let phiPart =
+Math.cos(pmin)-Math.cos(pmax);
+
+let thetaPart =
+tmax-tmin;
+
+let volume =
+rhoPart *
+phiPart *
+thetaPart;
+
+document.getElementById(
+"solution-steps"
+).innerHTML = `
+
+<h3>Region Limits</h3>
+
+<p>${rmin} ≤ ρ ≤ ${rmax}</p>
+
+<p>
+${document.getElementById("pmin").value}
+≤ φ ≤
+${document.getElementById("pmax").value}
+</p>
+
+<p>
+${document.getElementById("tmin").value}
+≤ θ ≤
+${document.getElementById("tmax").value}
+</p>
+
+<hr>
+
+<h3>Volume Integral</h3>
+
+<p>
+V =
+∫∫∫ ρ² sinφ dρ dφ dθ
+</p>
+
+<p>
+V =
+∫<sub>${document.getElementById("tmin").value}</sub>
+<sup>${document.getElementById("tmax").value}</sup>
+
+∫<sub>${document.getElementById("pmin").value}</sub>
+<sup>${document.getElementById("pmax").value}</sup>
+
+∫<sub>${rmin}</sub>
+<sup>${rmax}</sup>
+
+ρ² sinφ
+dρ dφ dθ
+</p>
+
+<hr>
+
+<h3>Step 1 : Integrate wrt ρ</h3>
+
+<p>
+(ρ³/3)|<sub>${rmin}</sub><sup>${rmax}</sup>
+</p>
+
+<p>
+=
+${rhoPart.toFixed(4)}
+</p>
+
+<hr>
+
+<h3>Step 2 : Integrate wrt φ</h3>
+
+<p>
+[-cosφ]
+</p>
+
+<p>
+=
+cos(${document.getElementById("pmin").value})
+-
+cos(${document.getElementById("pmax").value})
+</p>
+
+<p>
+=
+${phiPart.toFixed(4)}
+</p>
+
+<hr>
+
+<h3>Step 3 : Integrate wrt θ</h3>
+
+<p>
+θ|<sub>${document.getElementById("tmin").value}</sub>
+<sup>${document.getElementById("tmax").value}</sup>
+</p>
+
+<p>
+=
+${thetaPart.toFixed(4)}
+</p>
+
+<hr>
+
+<h3>Final Volume</h3>
+
+<p>
+=
+${rhoPart.toFixed(4)}
+×
+${phiPart.toFixed(4)}
+×
+${thetaPart.toFixed(4)}
+</p>
+
+<p>
+=
+${volume.toFixed(4)}
+</p>
+
+<hr>
+
+<h2 style="color:green">
+Volume = ${volume.toFixed(4)}
+</h2>
+
+`;
+}
+}
+function showSimTab(tabId, btn){
+
+    document
+        .querySelectorAll(".sim-content")
+        .forEach(tab => {
+            tab.classList.remove("active");
+        });
+
+    document
+        .getElementById(tabId)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".sim-tab-btn")
+        .forEach(button => {
+            button.classList.remove("active");
+        });
+
+    btn.classList.add("active");
+}
+window.addEventListener("DOMContentLoaded",()=>{
+
+    document
+    .getElementById("solve-triple")
+    .addEventListener(
+        "click",
+        solveTripleIntegral
+    );
+
+});
+function solveTripleIntegral(){
+    const integrand =
+    document.getElementById("integrand").value;
+
+    const f = math.compile(integrand);
+
+    const xMin =
+    parseFloat(
+        document.getElementById("xlower").value
+    );
+
+    const xMax =
+    parseFloat(
+        document.getElementById("xupper").value
+    );
+
+    const yMinExpr =
+    math.compile(
+        document.getElementById("ylower").value
+    );
+
+    const yMaxExpr =
+    math.compile(
+        document.getElementById("yupper").value
+    );
+
+    const zMinExpr =
+    math.compile(
+        document.getElementById("zlower").value
+    );
+
+    const zMaxExpr =
+    math.compile(
+        document.getElementById("zupper").value
+    );
+
+    let total = 0;
+
+    const Nx = 20;
+    const Ny = 20;
+    const Nz = 20;
+
+    const dx = (xMax - xMin)/Nx;
+
+    for(let i=0;i<Nx;i++){
+
+        const x =
+        xMin + (i+0.5)*dx;
+
+        const yMin =
+        yMinExpr.evaluate({x});
+
+        const yMax =
+        yMaxExpr.evaluate({x});
+
+        const dy =
+        (yMax-yMin)/Ny;
+
+        for(let j=0;j<Ny;j++){
+
+            const y =
+            yMin + (j+0.5)*dy;
+
+            const zMin =
+            zMinExpr.evaluate({x,y});
+
+            const zMax =
+            zMaxExpr.evaluate({x,y});
+
+            const dz =
+            (zMax-zMin)/Nz;
+
+            for(let k=0;k<Nz;k++){
+
+                const z =
+                zMin + (k+0.5)*dz;
+
+                total +=
+                f.evaluate({x,y,z})
+                *dx*dy*dz;
+            }
+        }
+    }
+
+let stepZ =
+"∫(" + integrand + ") dz";
+
+let afterZ =
+"Apply z limits";
+
+let stepY =
+"Integrate result wrt y";
+
+let afterY =
+"Apply y limits";
+
+let stepX =
+"Integrate result wrt x";
+
+let finalSymbolic =
+"Final symbolic form";
+
+document.getElementById("triple-solution").innerHTML = `
+
+<h3>Step 1 : Original Integral</h3>
+
+<p>
+I =
+∫<sub>${xMin}</sub><sup>${xMax}</sup>
+∫<sub>${document.getElementById("ylower").value}</sub>
+<sup>${document.getElementById("yupper").value}</sup>
+∫<sub>${document.getElementById("zlower").value}</sub>
+<sup>${document.getElementById("zupper").value}</sup>
+
+(${integrand})
+
+dz dy dx
+</p>
+
+<hr>
+
+<h3>Step 2 : Integrate wrt z</h3>
+
+<p>
+∫(${integrand}) dz
+<br>
+= ${stepZ}
+</p>
+<hr>
+
+<h3>Step 3 : Apply z limits</h3>
+
+<p>
+${afterZ}
+</p>
+
+<hr>
+
+<h3>Step 4 : Integrate wrt y</h3>
+
+<p>
+∫(${afterZ}) dy
+<br>
+= ${stepY}
+</p>
+
+<hr>
+
+<h3>Step 5 : Apply y limits</h3>
+
+<p>
+${afterY}
+</p>
+<hr>
+
+<h3>Step 6 : Integrate wrt x</h3>
+
+<p>
+∫(${afterY}) dx
+<br>
+= ${stepX}
+</p>
+
+<hr>
+
+<h3>Step 7 : Apply x limits</h3>
+
+<p>
+${finalSymbolic}
+</p>
+<hr>
+
+<h2 style="color:green">
+Numerical Answer = ${total.toFixed(6)}
+</h2>
+
+`;
+
+drawTripleRegion();
+}
+function drawTripleRegion(){
+
+    const xMin =
+    parseFloat(document.getElementById("xlower").value);
+
+    const xMax =
+    parseFloat(document.getElementById("xupper").value);
+
+    let yMax = xMax;
+
+    try{
+        yMax =
+        math.evaluate(
+            document.getElementById("yupper").value,
+            {x:xMax}
+        );
+    }
+    catch(e){}
+
+    let zMax = xMax + yMax;
+
+    try{
+        zMax =
+        math.evaluate(
+            document.getElementById("zupper").value,
+            {
+                x:xMax,
+                y:yMax
+            }
+        );
+    }
+    catch(e){}
+
+    let trace = {
+
+        type:'mesh3d',
+
+        x:[
+            xMin,xMax,xMax,xMin,
+            xMin,xMax,xMax,xMin
+        ],
+
+        y:[
+            0,0,yMax,yMax,
+            0,0,yMax,yMax
+        ],
+
+        z:[
+            0,0,0,0,
+            zMax,zMax,zMax,zMax
+        ],
+
+        opacity:0.6
+    };
+
+    let layout = {
+
+        title:"Region of Integration",
+
+        scene:{
+            xaxis:{title:"x"},
+            yaxis:{title:"y"},
+            zaxis:{title:"z"}
+        }
+    };
+
+    Plotly.newPlot(
+        "triple-plot",
+        [trace],
+        layout
+    );
+
+}
+
